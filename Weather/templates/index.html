@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+    {% load static %}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/x-icon">
+    <title>Weather</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+      *{
+        text-transform: capitalize;
+      }
+      
+      .d-flex{
+        padding-left: 30%;
+         padding-right: 30%;
+      }
+      @media (max-width: 768px){
+        .d-flex{
+          padding-left: 15% !important;
+          padding-right: 15% !important;
+        }
+      }
+      @media (max-width: 370px){
+        .d-flex{
+          display: inherit !important;
+        }
+      }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" >
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="{% static 'logo1.png' %}" width="100" height="40">
+           </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">about</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Recent Location
+                </a>
+                <ul class="dropdown-menu" id="cityDropdown">
+                  <li><hr class="dropdown-divider"></li>
+                  <!-- City names will be dynamically added here -->
+                </ul>
+                
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active"  href="">Use Guide</a>
+              </li>
+            </ul>
+           
+          </div>
+        </div>
+      </nav>
+      <div class="container" style="padding:0%;">
+        <div>
+          <h1 class="my-4 text-center" style="color: blue;">Search For Your Current Location</h1>
+        <center><form class="d-flex" role="search" >
+          <input class="form-control me-2" id="city" type="search" placeholder="Enter your Location" aria-label="Search" style="width: 100%;">
+          <button class="btn btn-outline-success" type="submit" id="submit">Search</button>
+        </form></center>
+      </div>
+        <h1 class="my-4 text-center">Weather For <span id="cityName"></span></h1>
+        <div style="border: 1px solid black;padding:0% 1% 0% 1%; margin-bottom: 5%;">
+        <h2 class="my-4 text-center">Today</h2>
+        <h4 class="my-4 text-center" id="date"></h4>
+
+        <main>
+            <div class="row row-cols-1 row-cols-md-3 mb-3 text-center" >
+              <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                  <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">Temprature</h4>
+                  </div>
+                  <div class="card-body">
+                    <h1 class="card-title pricing-card-title"><span id="temp"></span><small class="text-body-secondary fw-light">&deg;C</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                      <li> Min Temprature is <span id="min_temp"></span></li>
+                      <li> Max Temprature is <span id="max_temp"></span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                  <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">Cloud ( <span id="Cloud"></span> )</h4>
+                  </div>
+                  <div class="card-body">
+                    <h1 class="card-title pricing-card-title"><span id="cloud_pct"></span><small class="text-body-secondary fw-light">%</small>
+                      <img id="myImg" src="" alt="cloud condition" width="55" height="45"> 
+                    </h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li> Feels Like <span id="feels_like"></span></li>
+                        <li> Humidity is <span id="humidity"></span></li>
+                     </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm border-primary">
+                  <div class="card-header py-3 text-bg-primary border-primary">
+                    <h4 class="my-0 fw-normal">Wind</h4>
+                  </div>
+                  <div class="card-body">
+                    <h1 class="card-title pricing-card-title"><span id="wind_speed"></span><small class="text-body-secondary fw-light" style="text-transform: none;"> Km/h</small></h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        
+                        <li> Sunrise Time is <span id="sunrise"></span></li>
+                        <li> Sunset Time is <span id="sunset"></span></li>
+                        
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+            <h2 class="display-6 text-center mb-4">Weather of Recent Searched Cities</h2>
+        
+            <div class="table-responsive">
+              <table id="weatherTable" class="table text-center">
+                <thead>
+                  <tr>
+                    <th>City</th>
+                    <th>Cloud_pct</th>
+                    <th>Temp</th>
+                    <th>Feels Like</th>
+                    <th>Humidity</th>
+                    <th>Min Temp</th>
+                    <th>Max Temp</th>
+                    <th>Wind Speed</th>
+                    <th>Sunrise</th>
+                    <th>Sunset</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Data will be added here -->
+                </tbody>
+              </table>
+            </div>
+          </main>
+      </div>
+      
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('date').innerHTML = Date();
+const apiKey = 'de2beab57661f8e1fccd157c3b6ab24c';
+
+let a;
+let t;
+
+function printvalue(a,t) {
+    if (t>35){
+        //send alert for heigh temperature 
+        alert("High Temperature Alert");
+    }
+
+    if (a > 95 && a <= 100) {
+        document.getElementById("myImg").src = "{% static  'rain95-100.png' %}";
+        Cloud.innerHTML = "Heavy Rain";
+    } else if (a > 85 && a <= 95) {
+        document.getElementById("myImg").src = "{% static  'rain85-95.png'%}";
+        Cloud.innerHTML = "Mostly Rain";
+    } else if (a > 70 && a <= 85) {
+        document.getElementById("myImg").src = "{% static 'rain70-85.png'%}";
+        Cloud.innerHTML = "Rain";
+    } else if (a > 50 && a <= 70) {
+        document.getElementById("myImg").src = "{% static 'rain50-70.png'%}";
+        Cloud.innerHTML = "Slow Rain";
+    } else if (a > 30 && a <= 50) {
+        document.getElementById("myImg").src = "{% static 'rain30-50.png'%}";
+        Cloud.innerHTML = "Mostly Cloud";
+    } else if (a > 15 && a <= 30) {
+        document.getElementById("myImg").src = "{% static 'rain15-30.png'%}";
+        Cloud.innerHTML = "Cloud";
+    } else if (a > 5 && a <= 15) {
+        document.getElementById("myImg").src = "{% static 'rain5-15.png'%}";
+        Cloud.innerHTML = "Mostly Sunny";
+    } else {
+        document.getElementById("myImg").src = "{% static 'rain0-5.png' %}";
+        // alert to user for weather that its too much sunny
+        Cloud.innerHTML = "Sunny";
+        // alert("Too much sunny");
+    }
+}
+
+const weatherGet = (city1) => {
+    cityName.innerHTML = city1;
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city1}&appid=${apiKey}&units=metric`)
+        .then(response => response.json())
+        .then(response => {
+            const cl = response.clouds.all;
+            printvalue(cl,response.main.temp);
+            cloud_pct.innerHTML = cl;  // Cloud percentage
+            temp.innerHTML = response.main.temp;  // Current temperature in Celsius
+            
+            feels_like.innerHTML = response.main.feels_like;  // Feels-like temperature
+            humidity.innerHTML = response.main.humidity;  // Humidity percentage
+            min_temp.innerHTML = response.main.temp_min;  // Min temperature in Celsius
+            max_temp.innerHTML = response.main.temp_max;  // Max temperature in Celsius
+            wind_speed.innerHTML = response.wind.speed;  // Wind speed in m/s
+            sunrise.innerHTML = convertUnixTimestampToTime(response.sys.sunrise);  // Sunrise time
+            sunset.innerHTML = convertUnixTimestampToTime(response.sys.sunset);  // Sunset time
+        })
+        .catch(err => console.error(err));
+};
+
+// Time converter: convert Unix timestamp to readable time
+function convertUnixTimestampToTime(unixTimestamp) {
+    const date = new Date(unixTimestamp * 1000);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+// Default city
+weatherGet("Lucknow");
+
+// On-click weather update
+submit.addEventListener("click", (event) => {
+    event.preventDefault();
+    weatherGet(city.value);
+    
+    // Store city name in local storage
+    if (localStorage.count) {
+        localStorage.count = Number(localStorage.count) + 1;
+        localStorage.setItem(localStorage.count, city.value);
+        getWeather(localStorage.getItem(localStorage.count));
+    } else {
+        localStorage.count = 1;
+    }
+});
+
+// For table weather data
+const getWeather = (city) => {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+        .then(response => response.json())
+        .then(response => {
+            
+            const table = document.getElementById('weatherTable').getElementsByTagName('tbody')[0];
+            const row = table.insertRow();
+            
+            // Array for table data
+            const cells = [
+                city,
+                response.clouds.all,
+                response.main.temp,
+                response.main.feels_like,
+                response.main.humidity,
+                response.main.temp_min,
+                response.main.temp_max,
+                response.wind.speed,
+                convertUnixTimestampToTime(response.sys.sunrise),
+                convertUnixTimestampToTime(response.sys.sunset)
+            ];
+            
+            // Filling table with data
+            for (let i = 0; i < cells.length; i++) {
+                const cell = row.insertCell(i);
+                cell.textContent = cells[i];
+            }
+        })
+        .catch(err => console.error(err));
+};
+
+// Populate table with stored cities
+if (localStorage.count) {
+    let counter = localStorage.count;
+    let loopno = counter > 5 ? 5 : counter;
+    for (let i = 0; i < loopno; i++) {
+        getWeather(localStorage.getItem(counter));
+        counter--;
+    }
+}
+
+// Change dropdown
+if (localStorage.count) {
+    const dropdownMenu = document.getElementById('cityDropdown');
+    let counter = localStorage.count;
+    let loopno = counter > 5 ? 5 : counter;
+
+    for (let i = 0; i < loopno; i++) {
+        const cityName = localStorage.getItem(counter);
+        if (cityName) {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<a class="dropdown-item" href="#">${cityName}</a>`;
+            dropdownMenu.appendChild(listItem);
+            counter--;
+        }
+    }
+}
+
+    </script>
+</body>
+</html>
