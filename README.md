@@ -8,6 +8,7 @@ Display current temperature, humidity, and other relevant weather data
 Python
 Django
 HTML/CSS
+JavaScript
 SQLite (for database management)
 # live web link
 https://prabhat708.pythonanywhere.com/
